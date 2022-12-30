@@ -262,8 +262,8 @@ async def commandinfo(interaction: discord.Interaction, command: str, descriptio
                           color=BLURPLE_COLOR)
     embed.set_footer(text=f"Gesendet von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
     embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
-    interaction.response.send_message("Sent!", ephemeral=True)
-    interaction.channel.send(embed=embed)
+    await interaction.response.send_message("Sent!", ephemeral=True)
+    await interaction.channel.send(embed=embed)
 
 
 @bot.tree.command(name="announce", description="Eine Ankündigung machen!")
