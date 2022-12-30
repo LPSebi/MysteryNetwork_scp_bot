@@ -25,6 +25,7 @@ SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
 TEAM_ROLE_ID = 1053808168381190173
 TEAM_UPDATES_CHANNEL = 1058088833687769149
+SUGGESTIONS_CHANNEL = 1053808170423832595
 
 # Main code
 
@@ -290,6 +291,22 @@ async def git_pull(interaction: discord.Interaction):
         title="Bot is restarting!")
     os.system("pm2 restart 11")
     return await interaction.response.send_message(embed=gitpulldone, ephemeral=True)
+
+
+@bot.event
+async def on_message(message: discord.Message):
+    if message.channel != bot.get_channel(SUGGESTIONS_CHANNEL) or message.author.bot:
+        return
+    embed = discord.Embed(title=f"Neuer Vorschlag von {message.author.name}#{message.author.discriminator}",
+                          description=f"**{message.content}**", color=BLURPLE_COLOR)
+    embed.set_author(name=message.guild.name, icon_url=message.guild.icon)
+    embed.set_footer(text=f"Vorschlag von {message.author.name}#{message.author.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}",
+                     icon_url=message.author.avatar)
+    await message.delete()
+    msg = await message.channel.send(embed=embed)
+    await msg.add_reaction("⬆️")
+    await msg.add_reaction("⬇️")
+
 
 if __name__ == '__main__':
     bot.run(TOKEN)
