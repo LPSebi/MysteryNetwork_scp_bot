@@ -102,12 +102,14 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
                                        color=PROMOTED_COLOR)
     self_promote_embed.set_thumbnail(url=member.avatar)
     self_promote_embed.set_footer(text=f"Befördert von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    self_promote_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
 
     channel_promote_embed = discord.Embed(title=f"{member.name} wurde befördert!",
                                           description=f"{member.mention} wurde von {highest_role.mention} zu {role.mention} befördert!",
                                           color=PROMOTED_COLOR)
     channel_promote_embed.set_thumbnail(url=member.avatar)
     channel_promote_embed.set_footer(text=f"Befördert von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    channel_promote_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
 
     await member.remove_roles(highest_role)
     await member.add_roles(role)
@@ -133,12 +135,14 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
                                       color=DEMOTED_COLOR)
     self_demote_embed.set_thumbnail(url=member.avatar)
     self_demote_embed.set_footer(text=f"Degradiert von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    self_demote_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
 
     channel_demote_embed = discord.Embed(title=f"{member.name} wurde degradiert!",
                                          description=f"{member.mention} wurde von {highest_role.mention} zu {role.mention} degradiert!",
                                          color=DEMOTED_COLOR)
     channel_demote_embed.set_thumbnail(url=member.avatar)
     channel_demote_embed.set_footer(text=f"Degradiert von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    channel_demote_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
 
     await member.remove_roles(highest_role)
     await member.add_roles(role)
@@ -160,11 +164,13 @@ async def teamkick(interaction: discord.Interaction, member: discord.Member):
                           color=TEAMKICK_COLOR)
     embed.set_thumbnail(url=member.avatar)
     embed.set_footer(text=f"Entlassen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     self_embed = discord.Embed(title="Erfolgreich entlassen!",
                                description=f"{member.mention} wurde erfolgreich aus dem Team entlassen!",
                                color=TEAMKICK_COLOR)
     self_embed.set_thumbnail(url=member.avatar)
     self_embed.set_footer(text=f"Entlassen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    self_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
 
     await member.remove_roles(interaction.guild.get_role(TEAM_ROLE_ID))
@@ -189,6 +195,7 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
                           color=TEAMACCEPT_COLOR)
     embed.set_thumbnail(url=member.avatar)
     embed.set_footer(text=f"Angenommen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
 
     channel_embed = discord.Embed(title="Angenommen!",
@@ -196,6 +203,7 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
                                   color=TEAMACCEPT_COLOR)
     channel_embed.set_thumbnail(url=member.avatar)
     channel_embed.set_footer(text=f"Angenommen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    channel_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     await interaction.channel.send(embed=channel_embed)
 
     self_embed = discord.Embed(title="Erfolgreich aufgenommen!",
@@ -203,6 +211,7 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
                                color=TEAMACCEPT_COLOR)
     self_embed.set_thumbnail(url=member.avatar)
     self_embed.set_footer(text=f"Angenommen Entlassen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    self_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
 
     await member.add_roles(interaction.guild.get_role(TEAM_ROLE_ID))
     await member.add_roles(interaction.guild.get_role(SUPPORTER_ROLE_ID))
@@ -223,6 +232,7 @@ async def ablehnen(interaction: discord.Interaction, member: discord.Member):
                           color=TEAMDECLINE_COLOR)
     embed.set_thumbnail(url=member.avatar)
     embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
 
     channel_embed = discord.Embed(title="Abgelehnt!",
@@ -230,6 +240,7 @@ async def ablehnen(interaction: discord.Interaction, member: discord.Member):
                                   color=TEAMDECLINE_COLOR)
     channel_embed.set_thumbnail(url=member.avatar)
     channel_embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    channel_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     await interaction.channel.send(embed=channel_embed)
 
     self_embed = discord.Embed(title="Erfolgreich abgelehnt!",
@@ -237,6 +248,7 @@ async def ablehnen(interaction: discord.Interaction, member: discord.Member):
                                color=TEAMDECLINE_COLOR)
     self_embed.set_thumbnail(url=member.avatar)
     self_embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    self_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
 
     await interaction.response.send_message(embed=self_embed, ephemeral=True)
 
@@ -248,8 +260,24 @@ async def commandinfo(interaction: discord.Interaction, command: str, descriptio
     embed = discord.Embed(title=f"Command: {command}",
                           description=f"Beschreibung: {description}",
                           color=BLURPLE_COLOR)
+    embed.set_footer(text=f"Gesendet von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
     interaction.response.send_message("Sent!", emphemeral=True)
     interaction.channel.send(embed=embed)
+
+
+@bot.tree.command(name="announce", description="Eine Ankündigung machen!")
+async def announce(interaction: discord.Interaction, message: str):
+    if not await bot.is_owner(interaction.user):
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", emphemeral=True)
+    embed = discord.Embed(title=f"Ankündigung:\n\n{message}\n_ _",
+                          description="_ _",
+                          color=BLURPLE_COLOR)
+    embed.set_footer(text=f"Angekündigt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
+
+    await interaction.channel.send(embed=embed)
+    await interaction.response.send_message("Sent!", ephemeral=True)
 
 
 @bot.tree.command(name="update", description="Bot updaten!")
