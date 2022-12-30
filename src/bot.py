@@ -20,7 +20,7 @@ DEMOTED_COLOR = discord.Color.red()
 TEAMKICK_COLOR = discord.Color.red()
 TEAMACCEPT_COLOR = discord.Color.green()
 TEAMDECLINE_COLOR = discord.Color.red()
-CYAN_COLOR = discord.Color.cyan()
+BLURPLE_COLOR = discord.Color.blurple()
 SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
 TEAM_ROLE_ID = 1053808168381190173
@@ -247,7 +247,7 @@ async def commandinfo(interaction: discord.Interaction, command: str, descriptio
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", emphemeral=True)
     embed = discord.Embed(title=f"Command: {command}",
                           description=f"Beschreibung: {description}",
-                          color=CYAN_COLOR)
+                          color=BLURPLE_COLOR)
     interaction.response.send_message("Sent!", emphemeral=True)
     interaction.channel.send(embed=embed)
 
