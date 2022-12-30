@@ -20,6 +20,7 @@ DEMOTED_COLOR = discord.Color.red()
 TEAMKICK_COLOR = discord.Color.red()
 TEAMACCEPT_COLOR = discord.Color.green()
 TEAMDECLINE_COLOR = discord.Color.red()
+CYAN_COLOR = discord.Color.cyan()
 SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
 TEAM_ROLE_ID = 1053808168381190173
@@ -240,6 +241,15 @@ async def ablehnen(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(embed=self_embed, ephemeral=True)
 
 
+@bot.tree.command(name="commandinfo", description="Informationen über einen command!")
+async def commandinfo(interaction: discord.Interaction, command: str, description: str):
+    if not await bot.is_owner(interaction.user):
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", emphemeral=True)
+    embed = discord.Embed(title=f"Command: {command}",
+                          description=f"Beschreibung: {description}",
+                          color=CYAN_COLOR)
+
+
 @bot.tree.command(name="update", description="Bot updaten!")
 async def git_pull(interaction: discord.Interaction):
     if not await bot.is_owner(interaction.user):
@@ -247,7 +257,8 @@ async def git_pull(interaction: discord.Interaction):
     os.system("git stash")
     os.system("git pull")
     gitpulldone = discord.Embed(
-        title="Please rerun the bot")
+        title="Bot is restarting!")
+    os.system("pm2 restart 11")
     return await interaction.response.send_message(embed=gitpulldone, ephemeral=True)
 
 if __name__ == '__main__':
