@@ -19,6 +19,7 @@ PROMOTED_COLOR = discord.Color.green()
 DEMOTED_COLOR = discord.Color.red()
 TEAMKICK_COLOR = discord.Color.red()
 TEAMACCEPT_COLOR = discord.Color.green()
+TEAMDECLINE_COLOR = discord.Color.red()
 SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
 TEAM_ROLE_ID = 1053808168381190173
@@ -208,8 +209,35 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(embed=self_embed, ephemeral=True)
 
 
-# @bot.tree.command(name="ablehnen", description="Ein Bewerbung ablehnen!")
-# async def ablehnen(interaction: discord.Interaction, member: discord.Member):
+@bot.tree.command(name="ablehnen", description="Ein Bewerbung ablehnen!")
+async def ablehnen(interaction: discord.Interaction, member: discord.Member):
+    if not await bot.is_owner(interaction.user):
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
+
+    if interaction.guild.get_role(TEAM_ROLE_ID) in member.roles:
+        return await interaction.response.send_message("Dieser Spieler ist bereits im Team!", ephemeral=True)
+
+    embed = discord.Embed(title=f"{member.name} wurde leider nicht in das Team aufgenommen!",
+                          description=f"{member.mention} konnte leider nicht in das Team aufgenommen werden, wir wünschen trotzdem viel Spaß auf dem Server!",
+                          color=TEAMDECLINE_COLOR)
+    embed.set_thumbnail(url=member.avatar)
+    embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
+
+    channel_embed = discord.Embed(title="Abgelehnt!",
+                                  description=f"Vielen Dank für die Interesse an einem Platz im Team {member.mention}!\nLeider wurde deine Bewerbung abgelehnt!",
+                                  color=TEAMDECLINE_COLOR)
+    channel_embed.set_thumbnail(url=member.avatar)
+    channel_embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    await interaction.channel.send(embed=channel_embed)
+
+    self_embed = discord.Embed(title="Erfolgreich abgelehnt!",
+                               description=f"{member.mention} wurde erfolgreich abgelehnt!",
+                               color=TEAMDECLINE_COLOR)
+    self_embed.set_thumbnail(url=member.avatar)
+    self_embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+
+    await interaction.response.send_message(embed=self_embed, ephemeral=True)
 
 
 @bot.tree.command(name="update", description="Bot updaten!")
