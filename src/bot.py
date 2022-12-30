@@ -256,20 +256,20 @@ async def ablehnen(interaction: discord.Interaction, member: discord.Member):
 @bot.tree.command(name="commandinfo", description="Informationen über einen command!")
 async def commandinfo(interaction: discord.Interaction, command: str, description: str):
     if not await bot.is_owner(interaction.user):
-        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", emphemeral=True)
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     embed = discord.Embed(title=f"Command: {command}",
                           description=f"Beschreibung: {description}",
                           color=BLURPLE_COLOR)
     embed.set_footer(text=f"Gesendet von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
     embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
-    interaction.response.send_message("Sent!", emphemeral=True)
+    interaction.response.send_message("Sent!", ephemeral=True)
     interaction.channel.send(embed=embed)
 
 
 @bot.tree.command(name="announce", description="Eine Ankündigung machen!")
 async def announce(interaction: discord.Interaction, message: str):
     if not await bot.is_owner(interaction.user):
-        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", emphemeral=True)
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     embed = discord.Embed(title=f"Ankündigung:\n\n{message}\n_ _",
                           description="_ _",
                           color=BLURPLE_COLOR)
@@ -283,7 +283,7 @@ async def announce(interaction: discord.Interaction, message: str):
 @bot.tree.command(name="update", description="Bot updaten!")
 async def git_pull(interaction: discord.Interaction):
     if not await bot.is_owner(interaction.user):
-        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", emphemeral=True)
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     os.system("git stash")
     os.system("git pull")
     gitpulldone = discord.Embed(
