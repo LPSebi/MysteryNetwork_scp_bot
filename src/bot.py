@@ -96,13 +96,13 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
                               color=BANNED_COLOR)
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    self_promote_embed = discord.Embed(title="Befördert",
+    self_promote_embed = discord.Embed(title=f"{member.name} wurde befördert!",
                                        description=f"{member.mention} wurde erfolgreich von {highest_role.mention} zu {role.mention} befördert!",
                                        color=PROMOTED_COLOR)
     self_promote_embed.set_thumbnail(url=member.avatar)
     self_promote_embed.set_footer(text=f"Befördert von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
-    channel_promote_embed = discord.Embed(title="Befördert",
+    channel_promote_embed = discord.Embed(title=f"{member.name} wurde befördert!",
                                           description=f"{member.mention} wurde von {highest_role.mention} zu {role.mention} befördert!",
                                           color=PROMOTED_COLOR)
     channel_promote_embed.set_thumbnail(url=member.avatar)
@@ -127,13 +127,13 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
                               color=BANNED_COLOR)
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    self_demote_embed = discord.Embed(title="Degradiert",
+    self_demote_embed = discord.Embed(title=f"{member.name} wurde degradiert!",
                                       description=f"{member.mention} wurde erfolgreich von {highest_role.mention} zu {role.mention} degradiert!",
                                       color=DEMOTED_COLOR)
     self_demote_embed.set_thumbnail(url=member.avatar)
     self_demote_embed.set_footer(text=f"Degradiert von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
-    channel_demote_embed = discord.Embed(title="Degradiert",
+    channel_demote_embed = discord.Embed(title=f"{member.name} wurde degradiert!",
                                          description=f"{member.mention} wurde von {highest_role.mention} zu {role.mention} degradiert!",
                                          color=DEMOTED_COLOR)
     channel_demote_embed.set_thumbnail(url=member.avatar)
