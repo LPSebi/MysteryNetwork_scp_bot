@@ -248,6 +248,8 @@ async def commandinfo(interaction: discord.Interaction, command: str, descriptio
     embed = discord.Embed(title=f"Command: {command}",
                           description=f"Beschreibung: {description}",
                           color=CYAN_COLOR)
+    interaction.response.send_message("Sent!", emphemeral=True)
+    interaction.channel.send(embed=embed)
 
 
 @bot.tree.command(name="update", description="Bot updaten!")
