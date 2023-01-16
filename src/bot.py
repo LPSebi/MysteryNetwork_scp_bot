@@ -26,6 +26,7 @@ BAN_LOG_TEAM_CHANNEL = 1057682406158651522
 TEAM_ROLE_ID = 1053808168381190173
 TEAM_UPDATES_CHANNEL = 1058088833687769149
 SUGGESTIONS_CHANNEL = 1053808170423832595
+HIGHTEAM_ROLE_ID = 1064567829837398036
 
 # Main code
 
@@ -91,6 +92,7 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
 
     highest_role = discord.utils.find(lambda role: role in interaction.guild.roles,
                                       reversed(member.roles))
+    highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
 
     # check if role is higher than his highest role
     if role.position < highest_role.position:
@@ -114,6 +116,8 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
 
     await member.remove_roles(highest_role)
     await member.add_roles(role)
+    if role.position >= highteam_role.position:
+        await member.add_roles(highteam_role)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=channel_promote_embed)
     await interaction.response.send_message(embed=self_promote_embed, ephemeral=True)
 
@@ -125,6 +129,7 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
 
     highest_role = discord.utils.find(lambda role: role in interaction.guild.roles,
                                       reversed(member.roles))
+    highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
 
     if role.position > highest_role.position:
         embed = discord.Embed(title="Fehler", description="Du kannst keine Rolle degradieren die niedriger ist als die gewünschte Rolle",
@@ -147,6 +152,8 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
 
     await member.remove_roles(highest_role)
     await member.add_roles(role)
+    if role.position < highteam_role.position:
+        await member.remove_roles(highteam_role)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=channel_demote_embed)
     await interaction.response.send_message(embed=self_demote_embed, ephemeral=True)
 
