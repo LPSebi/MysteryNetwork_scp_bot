@@ -27,6 +27,8 @@ TEAM_ROLE_ID = 1053808168381190173
 TEAM_UPDATES_CHANNEL = 1058088833687769149
 SUGGESTIONS_CHANNEL = 1053808170423832595
 HIGHTEAM_ROLE_ID = 1064567829837398036
+WELCOME_CHANNEL = 1053808170423832586
+
 
 # Main code
 
@@ -314,6 +316,23 @@ async def on_message(message: discord.Message):
     await msg.add_reaction("⬆️")
     await msg.add_reaction("⬇️")
 
+
+# Welcomer
+@bot.event
+async def on_member_join(member: discord.Member):
+    welcome_embed = discord.Embed(title=f"Willkommen auf dem MysteryNetwork {member.name}!", description=f"Das Serverteam wünscht einen guten Aufenthalt!", color=BLURPLE_COLOR)
+
+    view = discord.ui.View()
+    regelchannel_button = discord.ui.Button("[📜] | Regeln", style=discord.ButtonStyle.link, url="https://discord.com/channels/1053808168381190164/1053808170423832588")
+    infochannel_button = discord.ui.Button("[🚀] | Infos", style=discord.ButtonStyle.link, url="https://discord.com/channels/1053808168381190164/1053808170423832590")
+    ankündigungenchannel_button = discord.ui.Button("[📢] | Ankündigungen", style=discord.ButtonStyle.link, url="https://discord.com/channels/1053808168381190164/1055149846803251290")
+    leakschannel_button = discord.ui.Button("[🔥] | Leaks", style=discord.ButtonStyle.link, url="https://discord.com/channels/1053808168381190164/1061375465446707200")
+    view.add_item(regelchannel_button)
+    view.add_item(infochannel_button)
+    view.add_item(ankündigungenchannel_button)
+    view.add_item(leakschannel_button)
+
+    await member.guild.get_channel(WELCOME_CHANNEL).send(embed=welcome_embed, view=view)
 
 if __name__ == '__main__':
     bot.run(TOKEN)
