@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+from datetime import datetime
 import re
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import dotenv
 import os
 import colorama
@@ -22,15 +23,22 @@ TEAMKICK_COLOR = discord.Color.red()
 TEAMACCEPT_COLOR = discord.Color.green()
 TEAMDECLINE_COLOR = discord.Color.red()
 BLURPLE_COLOR = discord.Color.blurple()
+RESET_COLOR = discord.Color.red()
+MAIN_GUILD_ID = 1053808168381190164
 SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
 TEAM_ROLE_ID = 1053808168381190173
+MIDTEAM_ROLE_ID = 1065706005553483866
+HIGHTEAM_ROLE_ID = 1064567829837398036
+FIRSTWARN_ROLE_ID = 1065710370221731850
+SECONDWARN_ROLE_ID = 1065710673608314910
 TEAM_UPDATES_CHANNEL = 1058088833687769149
 SUGGESTIONS_CHANNEL = 1053808170423832595
-HIGHTEAM_ROLE_ID = 1064567829837398036
 WELCOME_CHANNEL = 1053808170423832586
 TEAMLIST_CHANNEL_ID = 1053808170868412469
-ROLE_EXCEPTIONS = (HIGHTEAM_ROLE_ID, TEAM_ROLE_ID, 1053808168397983808, 1053808168397983809, 1054700623301464104)
+WARNRESETLOG_CHANNEL_ID = 1065708884678955028
+WARNLOG_CHANNEL_ID = 1065709175373561906
+ROLE_EXCEPTIONS = (HIGHTEAM_ROLE_ID, TEAM_ROLE_ID, MIDTEAM_ROLE_ID, 1053808168397983808, 1053808168397983809, 1054700623301464104)
 
 
 # Main code
@@ -82,6 +90,31 @@ async def on_ready():
     print(colorama.Fore.CYAN + f'Serving {colorama.Fore.BLUE}{len(await bot.tree.fetch_commands())}{colorama.Fore.CYAN} commands')
 
 
+@tasks.loop(hours=24)
+async def reset_team_warns():
+    date = datetime.now()
+    if date.day == 19:
+        resetembed = discord.Embed(title="Alle Teamwarns wurden zurückgesetzt!",
+                                   description="Warns:", color=RESET_COLOR)
+        guild = discord.utils.get(bot.guilds, id=MAIN_GUILD_ID)
+        team_role = guild.get_role(TEAM_ROLE_ID)
+        roles = [role for role in guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
+        warnroles = [guild.get_role(FIRSTWARN_ROLE_ID), guild.get_role(SECONDWARN_ROLE_ID)]
+        for role in roles:
+            for member in role.members:
+                highest_role = discord.utils.find(lambda role: role in roles,
+                                                  reversed(member.roles))
+                if highest_role != role:
+                    return
+                warns = 0
+                for warn in warnroles:
+                    if warn in member.roles:
+                        warns += 1
+                        await member.remove_roles(warn)
+
+                resetembed.add_field(name=member.mention + "(" + member.name + "#" + member.discriminator + ")", value="Teamwarns:" + warns, inline=False)
+
+
 @bot.tree.command(name='banned', description="Einen gebannten spieler eintragen!")
 async def banned(interaction: discord.Interaction):
 
@@ -98,6 +131,7 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
     highest_role = discord.utils.find(lambda role: role in interaction.guild.roles,
                                       reversed(member.roles))
     highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
+    midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
 
     # check if role is higher than his highest role
     if role.position < highest_role.position:
@@ -123,6 +157,8 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
     await member.add_roles(role)
     if role.position >= highteam_role.position:
         await member.add_roles(highteam_role)
+    if role.position >= midteam_role.position:
+        await member.add_roles(midteam_role)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=channel_promote_embed)
     await interaction.response.send_message(embed=self_promote_embed, ephemeral=True)
 
@@ -135,6 +171,7 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
     highest_role = discord.utils.find(lambda role: role in interaction.guild.roles,
                                       reversed(member.roles))
     highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
+    midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
 
     if role.position > highest_role.position:
         embed = discord.Embed(title="Fehler", description="Du kannst keine Rolle degradieren die niedriger ist als die gewünschte Rolle",
@@ -159,6 +196,8 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
     await member.add_roles(role)
     if role.position < highteam_role.position:
         await member.remove_roles(highteam_role)
+    if role.position < midteam_role.position:
+        await member.remove_roles(midteam_role)
     await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=channel_demote_embed)
     await interaction.response.send_message(embed=self_demote_embed, ephemeral=True)
 
