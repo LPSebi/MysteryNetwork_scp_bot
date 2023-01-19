@@ -98,21 +98,18 @@ async def reset_team_warns():
                                    description="Warns:", color=RESET_COLOR)
         guild = discord.utils.get(bot.guilds, id=MAIN_GUILD_ID)
         team_role = guild.get_role(TEAM_ROLE_ID)
-        roles = [role for role in guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
+        # roles = [role for role in guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
         warnroles = [guild.get_role(FIRSTWARN_ROLE_ID), guild.get_role(SECONDWARN_ROLE_ID)]
-        for role in roles:
-            for member in role.members:
-                highest_role = discord.utils.find(lambda role: role in roles,
-                                                  reversed(member.roles))
-                if highest_role != role:
-                    return
-                warns = 0
-                for warn in warnroles:
-                    if warn in member.roles:
-                        warns += 1
-                        await member.remove_roles(warn)
+        for member in guild.members:
+            if team_role not in member.roles:
+                continue
+            warns = 0
+            for warn in warnroles:
+                for role in member.roles:
+                    warns += 1
+                    await member.remove_roles(role)
 
-                resetembed.add_field(name=member.mention + "(" + member.name + "#" + member.discriminator + ")", value="Teamwarns:" + warns, inline=False)
+            resetembed.add_field(name=member.mention + "(" + member.name + "#" + member.discriminator + ")", value="Teamwarns:" + warns, inline=False)
 
 
 @bot.tree.command(name='banned', description="Einen gebannten spieler eintragen!")
