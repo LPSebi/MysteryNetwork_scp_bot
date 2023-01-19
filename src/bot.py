@@ -30,7 +30,7 @@ SUGGESTIONS_CHANNEL = 1053808170423832595
 HIGHTEAM_ROLE_ID = 1064567829837398036
 WELCOME_CHANNEL = 1053808170423832586
 TEAMLIST_CHANNEL_ID = 1053808170868412469
-ROLE_EXCEPTIONS = [HIGHTEAM_ROLE_ID, TEAM_ROLE_ID, 1053808168397983808, 1053808168397983809, 1054700623301464104]
+ROLE_EXCEPTIONS = (HIGHTEAM_ROLE_ID, TEAM_ROLE_ID, 1053808168397983808, 1053808168397983809, 1054700623301464104)
 
 
 # Main code
@@ -347,7 +347,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 
     # get all roles over the team role and exclude the highteam role
 
-    roles = [role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS].reverse()
+    roles = [role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
     print(roles)
     if not roles:
         return
