@@ -98,6 +98,7 @@ async def reset_team_warns():
                                    description="Warns:", color=RESET_COLOR)
         guild = discord.utils.get(bot.guilds, id=MAIN_GUILD_ID)
         team_role = guild.get_role(TEAM_ROLE_ID)
+        resetchannel = bot.get_channel(RESET_TEAMWARN_CHANNEL)
         # roles = [role for role in guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
         warnroles = [guild.get_role(FIRSTWARN_ROLE_ID), guild.get_role(SECONDWARN_ROLE_ID)]
         for member in guild.members:
@@ -110,6 +111,7 @@ async def reset_team_warns():
                     await member.remove_roles(role)
 
             resetembed.add_field(name=member.mention + "(" + member.name + "#" + member.discriminator + ")", value="Teamwarns:" + warns, inline=False)
+        await resetchannel.send(embed=resetembed)
 
 
 @bot.tree.command(name='banned', description="Einen gebannten spieler eintragen!")
