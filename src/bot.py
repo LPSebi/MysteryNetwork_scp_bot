@@ -373,7 +373,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
             highest_role = discord.utils.find(lambda role: role in roles,
                                               reversed(member.roles))
             roleembed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=False) if highest_role == role else None
-        if role.members.count == 0:
+        if len(role.members) == 0:
             roleembed.add_field(name="Keine Mitglieder", value="_ _", inline=False)
         await teamlist_channel.send(embed=roleembed)
 
