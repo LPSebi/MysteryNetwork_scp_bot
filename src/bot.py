@@ -96,7 +96,7 @@ async def reset_team_warns():
     date = datetime.now()
     if date.day == 19:
         resetembed = discord.Embed(title="Alle Teamwarns wurden zurückgesetzt!",
-                                   description="Warns:", color=RESET_COLOR)
+                                   description="**Warns:**", color=RESET_COLOR)
         guild = discord.utils.get(bot.guilds, id=MAIN_GUILD_ID)
         team_role = guild.get_role(TEAM_ROLE_ID)
         resetchannel = bot.get_channel(WARNRESETLOG_CHANNEL_ID)
@@ -112,7 +112,7 @@ async def reset_team_warns():
                         warns += 1
                         await member.remove_roles(warn)
 
-            resetembed.add_field(name=member.mention + "(" + member.name + "#" + member.discriminator + ")", value="Teamwarns:" + str(warns), inline=False)
+            resetembed.add_field(member.name + "#" + member.discriminator, value="Teamwarns: " + str(warns), inline=False) if warns > 0 else None
         await resetchannel.send(embed=resetembed)
 
 
