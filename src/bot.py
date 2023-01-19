@@ -343,11 +343,11 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     team_role = after.guild.get_role(TEAM_ROLE_ID)
     highteam_role = after.guild.get_role(HIGHTEAM_ROLE_ID)
 
-    if highest_role.position < team_role.position:
-        return
     # get all roles over the team role and exclude the highteam role
     roles = [role for role in after.guild.roles if role.position > team_role.position and role != highteam_role]
     if not roles:
+        return
+    if not any(role in after.roles for role in roles):
         return
 
     # get teamlist channel
