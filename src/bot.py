@@ -344,7 +344,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     team_role = after.guild.get_role(TEAM_ROLE_ID)
     highteam_role = after.guild.get_role(HIGHTEAM_ROLE_ID)
 
-    if highest_role.position <= team_role.position:
+    if highest_role.position < team_role.position:
         return
     # get all roles over the team role and exclude the highteam role
     roles = [role for role in after.roles if role.position > team_role.position and role != highteam_role]
@@ -357,19 +357,19 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     await teamlist_channel.purge()
 
     firstembed = discord.Embed(title=f"Teammitglieder", description=f"Hier sind alle Teammitglieder aufgelistet:", color=BLURPLE_COLOR)
-    embed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
-    embed.set_author(name=after.guild.name, icon_url=after.guild.icon)
+    firstembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
+    firstembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
     await teamlist_channel.send(embed=firstembed)
 
     # list all staff members using embeds
     for role in roles:
         ishighteam = True if role.position > highteam_role.position else False
-        embed = discord.Embed(title=f"{role.name}:", description=f"Highteam: {'Ja' if ishighteam else 'Nein'}", color=BLURPLE_COLOR)
-        embed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
-        embed.set_author(name=after.guild.name, icon_url=after.guild.icon)
+        roleembed = discord.Embed(title=f"{role.name}:", description=f"Highteam: {'Ja' if ishighteam else 'Nein'}", color=BLURPLE_COLOR)
+        roleembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
+        roleembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
         for member in role.members:
-            embed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=True)
-        await teamlist_channel.send(embed=embed)
+            roleembed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=True)
+        await teamlist_channel.send(embed=roleembed)
 
 
 if __name__ == '__main__':
