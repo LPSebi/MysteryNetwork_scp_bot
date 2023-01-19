@@ -339,15 +339,14 @@ async def on_member_join(member: discord.Member):
 @bot.event
 async def on_member_update(before: discord.Member, after: discord.Member):
     ishighteam = False
-    highest_role = discord.utils.find(lambda role: role in after.guild.roles,
-                                      reversed(after.roles))
+
     team_role = after.guild.get_role(TEAM_ROLE_ID)
     highteam_role = after.guild.get_role(HIGHTEAM_ROLE_ID)
 
     if highest_role.position < team_role.position:
         return
     # get all roles over the team role and exclude the highteam role
-    roles = [role for role in after.roles if role.position > team_role.position and role != highteam_role]
+    roles = [role for role in after.guild.roles if role.position > team_role.position and role != highteam_role]
     if not roles:
         return
 
@@ -366,7 +365,10 @@ async def on_member_update(before: discord.Member, after: discord.Member):
         roleembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
         roleembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
         for member in role.members:
-            roleembed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=False)
+            highest_role = discord.utils.find(lambda role: role in member.roles,
+                                              reversed(roles))
+            roleembed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=False) if highest_role == role else None
+
         await teamlist_channel.send(embed=roleembed)
 
 
