@@ -106,10 +106,11 @@ async def reset_team_warns():
             if team_role not in member.roles:
                 continue
             warns = 0
-            for warn in warnroles:
-                for role in member.roles:
-                    warns += 1
-                    await member.remove_roles(role)
+            for role in member.roles:
+                for warn in warnroles:
+                    if role.id == warn.id:
+                        warns += 1
+                        await member.remove_roles(warn)
 
             resetembed.add_field(name=member.mention + "(" + member.name + "#" + member.discriminator + ")", value="Teamwarns:" + warns, inline=False)
         await resetchannel.send(embed=resetembed)
