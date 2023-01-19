@@ -81,6 +81,7 @@ class bannedInput(discord.ui.Modal, title='Trage Hier den gebannten Spieler ein!
 @bot.event
 async def on_ready():
     await bot.tree.sync()
+    await reset_team_warns.start()
     print('Bot is ready!')
     # print some stats about the bot with nice color formatting using colorama
     print(colorama.Fore.CYAN + f'Logged in as {colorama.Fore.BLUE}{bot.user}{colorama.Fore.CYAN} (ID: {colorama.Fore.BLUE}{bot.user.id}{colorama.Fore.CYAN})')
@@ -417,5 +418,4 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 
 
 if __name__ == '__main__':
-    reset_team_warns.start()
     bot.run(TOKEN)
