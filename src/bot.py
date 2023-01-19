@@ -299,7 +299,7 @@ async def git_pull(interaction: discord.Interaction):
     os.system("git pull")
     gitpulldone = discord.Embed(
         title="Bot is restarting!")
-    os.system("pm2 restart 11")
+    os.system("pm2 restart 10")
     return await interaction.response.send_message(embed=gitpulldone, ephemeral=True)
 
 
