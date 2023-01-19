@@ -366,6 +366,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     for role in roles:
         ishighteam = True if role.position > highteam_role.position else False
         roleembed = discord.Embed(title=re.sub(r".*\〡", "", role.name) + ':', description=f"**Highteam: {'Ja' if ishighteam else 'Nein'}**", color=BLURPLE_COLOR)
+        roleembed.set_thumbnail(url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/HD_transparent_picture.png/1200px-HD_transparent_picture.png")
         roleembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
         roleembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
         for member in role.members:
