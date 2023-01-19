@@ -28,6 +28,7 @@ TEAM_UPDATES_CHANNEL = 1058088833687769149
 SUGGESTIONS_CHANNEL = 1053808170423832595
 HIGHTEAM_ROLE_ID = 1064567829837398036
 WELCOME_CHANNEL = 1053808170423832586
+TEAMLIST_CHANNEL_ID = 1053808170868412469
 
 
 # Main code
@@ -333,6 +334,43 @@ async def on_member_join(member: discord.Member):
     view.add_item(leakschannel_button)
 
     await member.guild.get_channel(WELCOME_CHANNEL).send(embed=welcome_embed, view=view)
+
+
+@bot.event
+async def on_member_update(before: discord.Member, after: discord.Member):
+    ishighteam = False
+    highest_role = discord.utils.find(lambda role: role in after.guild.roles,
+                                      reversed(after.roles))
+    team_role = after.guild.get_role(TEAM_ROLE_ID)
+    highteam_role = after.guild.get_role(HIGHTEAM_ROLE_ID)
+
+    if highest_role.position <= team_role.position:
+        return
+    # get all roles over the team role and exclude the highteam role
+    roles = [role for role in after.roles if role.position > team_role.position and role != highteam_role]
+    if not roles:
+        return
+
+    # get teamlist channel
+    teamlist_channel = after.guild.get_channel(TEAMLIST_CHANNEL_ID)
+    # delete all messages in the channel
+    await teamlist_channel.purge()
+
+    firstembed = discord.Embed(title=f"Teammitglieder", description=f"Hier sind alle Teammitglieder aufgelistet:", color=BLURPLE_COLOR)
+    embed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
+    embed.set_author(name=after.guild.name, icon_url=after.guild.icon)
+    await teamlist_channel.send(embed=firstembed)
+
+    # list all staff members using embeds
+    for role in roles:
+        ishighteam = True if role.position > highteam_role.position else False
+        embed = discord.Embed(title=f"{role.name}:", description=f"Highteam: {'Ja' if ishighteam else 'Nein'}", color=BLURPLE_COLOR)
+        embed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
+        embed.set_author(name=after.guild.name, icon_url=after.guild.icon)
+        for member in role.members:
+            embed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=True)
+        await teamlist_channel.send(embed=embed)
+
 
 if __name__ == '__main__':
     bot.run(TOKEN)
