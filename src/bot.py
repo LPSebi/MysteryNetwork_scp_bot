@@ -348,7 +348,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     # get all roles over the team role and exclude the highteam role
 
     roles = [role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
-    roles = roles.reverse()
+    roles = roles[::-1]
     print(roles)
     if not roles:
         return
