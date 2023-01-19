@@ -415,4 +415,5 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 
 
 if __name__ == '__main__':
+    reset_team_warns.start()
     bot.run(TOKEN)
