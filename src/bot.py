@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import re
 import discord
 from discord.ext import commands
 import dotenv
@@ -346,7 +347,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 
     # get all roles over the team role and exclude the highteam role
 
-    roles = [role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
+    roles = reversed([role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS])
     print(roles)
     if not roles:
         return
@@ -364,7 +365,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     # list all staff members using embeds
     for role in roles:
         ishighteam = True if role.position > highteam_role.position else False
-        roleembed = discord.Embed(title=f"{role.name}:", description=f"Highteam: {'Ja' if ishighteam else 'Nein'}", color=BLURPLE_COLOR)
+        roleembed = discord.Embed(title=f"{re.sub(r'.*\| ', '', role.name)}:", description=f"**Highteam: {'Ja' if ishighteam else 'Nein'}**", color=BLURPLE_COLOR)
         roleembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
         roleembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
         for member in role.members:
