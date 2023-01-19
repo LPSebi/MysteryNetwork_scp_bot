@@ -357,7 +357,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     # delete all messages in the channel
     await teamlist_channel.purge()
 
-    firstembed = discord.Embed(title=f"Teammitglieder", description=f"_ _:", color=BLURPLE_COLOR)
+    firstembed = discord.Embed(title=f"Teammitglieder:", description=f"_ _", color=BLURPLE_COLOR)
     await teamlist_channel.send(embed=firstembed)
 
     # list all staff members using embeds
