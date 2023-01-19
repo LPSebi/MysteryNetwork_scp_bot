@@ -356,9 +356,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     # delete all messages in the channel
     await teamlist_channel.purge()
 
-    firstembed = discord.Embed(title=f"Teammitglieder", description=f"Hier sind alle Teammitglieder aufgelistet:", color=BLURPLE_COLOR)
-    firstembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
-    firstembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
+    firstembed = discord.Embed(title=f"Teammitglieder", description=f"_ _:", color=BLURPLE_COLOR)
     await teamlist_channel.send(embed=firstembed)
 
     # list all staff members using embeds
@@ -368,7 +366,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
         roleembed.set_footer(text=time.strftime('%d/%m/%Y %H:%M'))
         roleembed.set_author(name=after.guild.name, icon_url=after.guild.icon)
         for member in role.members:
-            roleembed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=True)
+            roleembed.add_field(name=f"{member.name}#{member.discriminator}", value=member.mention, inline=False)
         await teamlist_channel.send(embed=roleembed)
 
 
