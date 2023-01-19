@@ -94,7 +94,7 @@ async def on_ready():
 @tasks.loop(hours=24)
 async def reset_team_warns():
     date = datetime.now()
-    if date.day == 19:
+    if date.day == 1:
         resetembed = discord.Embed(title="Alle Teamwarns wurden zurückgesetzt!",
                                    description="**Warns:**", color=RESET_COLOR)
         guild = discord.utils.get(bot.guilds, id=MAIN_GUILD_ID)
