@@ -113,7 +113,7 @@ async def reset_team_warns():
                         await member.remove_roles(warn)
 
             if warns > 0:
-                resetembed.add_field(member.name + "#" + member.discriminator, value="Teamwarns: " + str(warns), inline=False)
+                resetembed.add_field(name=member.name + "#" + member.discriminator, value="Teamwarns: " + str(warns), inline=False)
         await resetchannel.send(embed=resetembed)
 
 
