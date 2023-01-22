@@ -24,6 +24,7 @@ TEAMACCEPT_COLOR = discord.Color.green()
 TEAMDECLINE_COLOR = discord.Color.red()
 BLURPLE_COLOR = discord.Color.blurple()
 RESET_COLOR = discord.Color.red()
+TEAMWARN_COLOR = discord.Color.red()
 MAIN_GUILD_ID = 1053808168381190164
 SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
@@ -238,7 +239,7 @@ async def teamkick(interaction: discord.Interaction, member: discord.Member):
 
 @bot.tree.command(name="annehmen", description="Ein Bewerbung annehmen!")
 async def annehmen(interaction: discord.Interaction, member: discord.Member):
-    if not await bot.is_owner(interaction.user):
+    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
 
     if interaction.guild.get_role(TEAM_ROLE_ID) in member.roles:
@@ -275,7 +276,7 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
 
 @bot.tree.command(name="ablehnen", description="Ein Bewerbung ablehnen!")
 async def ablehnen(interaction: discord.Interaction, member: discord.Member):
-    if not await bot.is_owner(interaction.user):
+    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
 
     if interaction.guild.get_role(TEAM_ROLE_ID) in member.roles:
@@ -322,7 +323,7 @@ async def commandinfo(interaction: discord.Interaction, command: str, descriptio
 
 @bot.tree.command(name="announce", description="Eine Ankündigung machen!")
 async def announce(interaction: discord.Interaction, message: str):
-    if not await bot.is_owner(interaction.user):
+    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     embed = discord.Embed(title=f"Ankündigung:\n\n{message}\n_ _",
                           description="_ _",
@@ -344,6 +345,66 @@ async def git_pull(interaction: discord.Interaction):
         title="Bot is restarting!")
     os.system("pm2 restart 10")
     return await interaction.response.send_message(embed=gitpulldone, ephemeral=True)
+
+
+@bot.tree.command(name="teamwarn", description="Teammitglied warnen!")
+async def teamwarn(interaction: discord.Interaction, member: discord.Member, reason: str):
+    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
+    selfembed = discord.Embed(title="Warn erfolgreich!",
+                              description=f"Du hast {member.mention} erfolgreich gewarnt!",
+                              color=TEAMWARN_COLOR)
+    selfembed.set_thumbnail(url=member.avatar)
+    selfembed.set_footer(text=f"Gewarnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    log_channel = bot.get_channel(WARNLOG_CHANNEL_ID)
+    team_role = interaction.guild.get_role(TEAM_ROLE_ID)
+    midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
+    highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
+    if team_role not in member.roles:
+        return await interaction.response.send_message("Dieses Mitglied ist nicht im Team!", ephemeral=True)
+    if interaction.user == member:
+        return await interaction.response.send_message("Du kannst dich nicht selbst warnen!", ephemeral=True)
+
+    is_demoted = "Ja" if midteam_role in member.roles or highteam_role in member.roles else "Nein"
+    log_embed = discord.Embed(title="Warn",
+                              description=f"**{member.mention}** wurde von **{interaction.user.mention}** gewarnt!\nDemote: {is_demoted}!\n**Grund:** {reason}",
+                              color=TEAMWARN_COLOR)
+    log_embed.set_thumbnail(url=member.avatar)
+    log_embed.set_footer(text=f"Gewarnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+
+    await interaction.response.send_message(embed=selfembed, ephemeral=True)
+    await log_channel.send(embed=log_embed)
+
+
+@bot.tree.command(name="teamunwarn", description="Teammitglied unwarnen!")
+async def teamunwarn(interaction: discord.Interaction, member: discord.Member, promote: bool = False):
+    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+        return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
+    selfembed = discord.Embed(title="Unwarn erfolgreich!",
+                              description=f"Du hast {member.mention} erfolgreich unwarned!",
+                              color=TEAMUNWARN_COLOR)
+    selfembed.set_thumbnail(url=member.avatar)
+    selfembed.set_footer(text=f"Unwarned von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+
+    log_channel = bot.get_channel(WARNLOG_CHANNEL_ID)
+    team_role = interaction.guild.get_role(TEAM_ROLE_ID)
+    midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
+    highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
+
+    if team_role not in member.roles:
+        return await interaction.response.send_message("Dieses Mitglied ist nicht im Team!", ephemeral=True)
+    if interaction.user == member:
+        return await interaction.response.send_message("Du kannst dich nicht selbst unwarnen!", ephemeral=True)
+
+    is_promoted = "Ja" if promote else "Nein"
+    log_embed = discord.Embed(title="Unwarn",
+                              description=f"**{member.mention}** wurde von **{interaction.user.mention}** unwarned!\nPromoted: {is_promoted}!",
+                              color=TEAMWARN_COLOR)
+    log_embed.set_thumbnail(url=member.avatar)
+    log_embed.set_footer(text=f"Unwarned von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+
+    await interaction.response.send_message(embed=selfembed, ephemeral=True)
+    await log_channel.send(embed=log_embed)
 
 
 @bot.event
