@@ -33,13 +33,12 @@ MIDTEAM_ROLE_ID = 1065706005553483866
 HIGHTEAM_ROLE_ID = 1064567829837398036
 FIRSTWARN_ROLE_ID = 1065710370221731850
 SECONDWARN_ROLE_ID = 1065710673608314910
-TEAM_UPDATES_CHANNEL = 1058088833687769149
-SUGGESTIONS_CHANNEL = 1053808170423832595
-WELCOME_CHANNEL = 1053808170423832586
+TEAM_UPDATES_CHANNEL_ID = 1058088833687769149
+SUGGESTIONS_CHANNEL_ID = 1053808170423832595
+WELCOME_CHANNEL_ID = 1053808170423832586
 TEAMLIST_CHANNEL_ID = 1053808170868412469
 WARNRESETLOG_CHANNEL_ID = 1065708884678955028
-WARNLOG_CHANNEL_ID = 1065709175373561906
-ROLE_EXCEPTIONS = (HIGHTEAM_ROLE_ID, TEAM_ROLE_ID, MIDTEAM_ROLE_ID, 1053808168397983808, 1053808168397983809, 1054700623301464104)
+ROLE_EXCEPTIONS_IDS = (HIGHTEAM_ROLE_ID, TEAM_ROLE_ID, MIDTEAM_ROLE_ID, 1053808168397983808, 1053808168397983809, 1054700623301464104)
 
 
 # Main code
@@ -162,7 +161,7 @@ async def promote(interaction: discord.Interaction, member: discord.Member, role
         await member.add_roles(highteam_role)
     if role.position >= midteam_role.position:
         await member.add_roles(midteam_role)
-    await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=channel_promote_embed)
+    await bot.get_channel(TEAM_UPDATES_CHANNEL_ID).send(embed=channel_promote_embed)
     await interaction.response.send_message(embed=self_promote_embed, ephemeral=True)
 
 
@@ -201,7 +200,7 @@ async def demote(interaction: discord.Interaction, member: discord.Member, role:
         await member.remove_roles(highteam_role)
     if role.position < midteam_role.position:
         await member.remove_roles(midteam_role)
-    await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=channel_demote_embed)
+    await bot.get_channel(TEAM_UPDATES_CHANNEL_ID).send(embed=channel_demote_embed)
     await interaction.response.send_message(embed=self_demote_embed, ephemeral=True)
 
 
@@ -226,7 +225,7 @@ async def teamkick(interaction: discord.Interaction, member: discord.Member):
     self_embed.set_thumbnail(url=member.avatar)
     self_embed.set_footer(text=f"Entlassen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
     self_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
-    await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
+    await bot.get_channel(TEAM_UPDATES_CHANNEL_ID).send(embed=embed)
 
     await member.remove_roles(interaction.guild.get_role(TEAM_ROLE_ID))
     # remove all roles over team role
@@ -251,7 +250,7 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
     embed.set_thumbnail(url=member.avatar)
     embed.set_footer(text=f"Angenommen von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
     embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
-    await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
+    await bot.get_channel(TEAM_UPDATES_CHANNEL_ID).send(embed=embed)
 
     channel_embed = discord.Embed(title="Angenommen!",
                                   description=f"Vielen Dank für deine Bewerbung {member.mention}!\nDu wurdest in das Team aufgenommen!",
@@ -288,7 +287,7 @@ async def ablehnen(interaction: discord.Interaction, member: discord.Member):
     embed.set_thumbnail(url=member.avatar)
     embed.set_footer(text=f"Abgelehnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
     embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon)
-    await bot.get_channel(TEAM_UPDATES_CHANNEL).send(embed=embed)
+    await bot.get_channel(TEAM_UPDATES_CHANNEL_ID).send(embed=embed)
 
     channel_embed = discord.Embed(title="Abgelehnt!",
                                   description=f"Vielen Dank für die Interesse an einem Platz im Team {member.mention}!\nLeider wurde deine Bewerbung abgelehnt!",
@@ -356,7 +355,7 @@ async def teamwarn(interaction: discord.Interaction, member: discord.Member, rea
                               color=TEAMWARN_COLOR)
     selfembed.set_thumbnail(url=member.avatar)
     selfembed.set_footer(text=f"Gewarnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
-    log_channel = bot.get_channel(WARNLOG_CHANNEL_ID)
+    team_updates_channel = bot.get_channel(TEAM_UPDATES_CHANNEL_ID)
     team_role = interaction.guild.get_role(TEAM_ROLE_ID)
     midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
     highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
@@ -366,14 +365,14 @@ async def teamwarn(interaction: discord.Interaction, member: discord.Member, rea
         return await interaction.response.send_message("Du kannst dich nicht selbst warnen!", ephemeral=True)
 
     is_demoted = "Ja" if midteam_role in member.roles or highteam_role in member.roles else "Nein"
-    log_embed = discord.Embed(title="Warn",
-                              description=f"**{member.mention}** wurde von **{interaction.user.mention}** gewarnt!\nDemote: {is_demoted}!\n**Grund:** {reason}",
-                              color=TEAMWARN_COLOR)
-    log_embed.set_thumbnail(url=member.avatar)
-    log_embed.set_footer(text=f"Gewarnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    public_embed = discord.Embed(title="Warn",
+                                 description=f"**{member.mention}** wurde von **{interaction.user.mention}** gewarnt!\nDemote: {is_demoted}!\n**Grund:** {reason}",
+                                 color=TEAMWARN_COLOR)
+    public_embed.set_thumbnail(url=member.avatar)
+    public_embed.set_footer(text=f"Gewarnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
     await interaction.response.send_message(embed=selfembed, ephemeral=True)
-    await log_channel.send(embed=log_embed)
+    await team_updates_channel.send(embed=public_embed)
 
 
 @bot.tree.command(name="teamunwarn", description="Teammitglied unwarnen!")
@@ -386,7 +385,7 @@ async def teamunwarn(interaction: discord.Interaction, member: discord.Member, p
     selfembed.set_thumbnail(url=member.avatar)
     selfembed.set_footer(text=f"Unwarned von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
-    log_channel = bot.get_channel(WARNLOG_CHANNEL_ID)
+    team_updates_channel = bot.get_channel(TEAM_UPDATES_CHANNEL_ID)
     team_role = interaction.guild.get_role(TEAM_ROLE_ID)
     midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
     highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
@@ -397,19 +396,19 @@ async def teamunwarn(interaction: discord.Interaction, member: discord.Member, p
         return await interaction.response.send_message("Du kannst dich nicht selbst unwarnen!", ephemeral=True)
 
     is_promoted = "Ja" if promote else "Nein"
-    log_embed = discord.Embed(title="Unwarn",
-                              description=f"**{member.mention}** wurde von **{interaction.user.mention}** unwarned!\nPromoted: {is_promoted}!",
-                              color=TEAMWARN_COLOR)
-    log_embed.set_thumbnail(url=member.avatar)
-    log_embed.set_footer(text=f"Unwarned von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
+    public_embed = discord.Embed(title="Unwarn",
+                                 description=f"**{member.mention}** wurde von **{interaction.user.mention}** unwarned!\nPromoted: {is_promoted}!",
+                                 color=TEAMWARN_COLOR)
+    public_embed.set_thumbnail(url=member.avatar)
+    public_embed.set_footer(text=f"Unwarned von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
     await interaction.response.send_message(embed=selfembed, ephemeral=True)
-    await log_channel.send(embed=log_embed)
+    await team_updates_channel.send(embed=public_embed)
 
 
 @bot.event
 async def on_message(message: discord.Message):
-    if message.channel != bot.get_channel(SUGGESTIONS_CHANNEL) or message.author.bot:
+    if message.channel != bot.get_channel(SUGGESTIONS_CHANNEL_ID) or message.author.bot:
         return
     embed = discord.Embed(title=f"Neuer Vorschlag von {message.author.name}#{message.author.discriminator}",
                           description=f"**{message.content}**", color=BLURPLE_COLOR)
@@ -437,7 +436,7 @@ async def on_member_join(member: discord.Member):
     view.add_item(ankündigungenchannel_button)
     view.add_item(leakschannel_button)
 
-    await member.guild.get_channel(WELCOME_CHANNEL).send(embed=welcome_embed, view=view)
+    await member.guild.get_channel(WELCOME_CHANNEL_ID).send(embed=welcome_embed, view=view)
 
 
 @bot.event
@@ -449,7 +448,7 @@ async def on_member_update(before: discord.Member, after: discord.Member):
 
     # get all roles over the team role and exclude the highteam role
 
-    roles = [role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS]
+    roles = [role for role in after.guild.roles if role.position > team_role.position and role.id not in ROLE_EXCEPTIONS_IDS]
     roles = roles[::-1]
     if not roles:
         return
