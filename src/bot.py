@@ -381,7 +381,7 @@ async def teamunwarn(interaction: discord.Interaction, member: discord.Member, p
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     selfembed = discord.Embed(title="Unwarn erfolgreich!",
                               description=f"Du hast {member.mention} erfolgreich unwarned!",
-                              color=TEAMUNWARN_COLOR)
+                              color=TEAMWARN_COLOR)
     selfembed.set_thumbnail(url=member.avatar)
     selfembed.set_footer(text=f"Unwarned von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
