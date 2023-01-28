@@ -275,7 +275,7 @@ async def annehmen(interaction: discord.Interaction, member: discord.Member):
 
 @bot.tree.command(name="ablehnen", description="Ein Bewerbung ablehnen!")
 async def ablehnen(interaction: discord.Interaction, member: discord.Member):
-    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+    if not interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
 
     if interaction.guild.get_role(TEAM_ROLE_ID) in member.roles:
@@ -322,7 +322,7 @@ async def commandinfo(interaction: discord.Interaction, command: str, descriptio
 
 @bot.tree.command(name="announce", description="Eine Ankündigung machen!")
 async def announce(interaction: discord.Interaction, message: str):
-    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+    if not interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     embed = discord.Embed(title=f"Ankündigung:\n\n{message}\n_ _",
                           description="_ _",
@@ -348,7 +348,7 @@ async def git_pull(interaction: discord.Interaction):
 
 @bot.tree.command(name="teamwarn", description="Teammitglied warnen!")
 async def teamwarn(interaction: discord.Interaction, member: discord.Member, reason: str):
-    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+    if not interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     selfembed = discord.Embed(title="Warn erfolgreich!",
                               description=f"Du hast {member.mention} erfolgreich gewarnt!",
@@ -377,7 +377,7 @@ async def teamwarn(interaction: discord.Interaction, member: discord.Member, rea
 
 @bot.tree.command(name="teamunwarn", description="Teammitglied unwarnen!")
 async def teamunwarn(interaction: discord.Interaction, member: discord.Member, promote: bool = False):
-    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+    if not interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
     selfembed = discord.Embed(title="Unwarn erfolgreich!",
                               description=f"Du hast {member.mention} erfolgreich unwarned!",
