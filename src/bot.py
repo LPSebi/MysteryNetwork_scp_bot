@@ -238,7 +238,7 @@ async def teamkick(interaction: discord.Interaction, member: discord.Member):
 
 @bot.tree.command(name="annehmen", description="Ein Bewerbung annehmen!")
 async def annehmen(interaction: discord.Interaction, member: discord.Member):
-    if not await interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
+    if not interaction.guild.get_role(HIGHTEAM_ROLE_ID) in interaction.user.roles:
         return await interaction.response.send_message("Du hast keine Berechtigung diesen Command auszuführen!", ephemeral=True)
 
     if interaction.guild.get_role(TEAM_ROLE_ID) in member.roles:
