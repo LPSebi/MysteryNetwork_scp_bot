@@ -25,6 +25,7 @@ TEAMDECLINE_COLOR = discord.Color.red()
 BLURPLE_COLOR = discord.Color.blurple()
 RESET_COLOR = discord.Color.red()
 TEAMWARN_COLOR = discord.Color.red()
+MITLGIED_ROLE_ID = 1053808168381190169
 MAIN_GUILD_ID = 1053808168381190164
 SUPPORTER_ROLE_ID = 1053808168397983804
 BAN_LOG_TEAM_CHANNEL = 1057682406158651522
@@ -435,6 +436,9 @@ async def on_member_join(member: discord.Member):
     view.add_item(infochannel_button)
     view.add_item(ankündigungenchannel_button)
     view.add_item(leakschannel_button)
+
+    # give mitlgied role
+    await member.add_roles(member.guild.get_role(MITGLIED_ROLE_ID))
 
     await member.guild.get_channel(WELCOME_CHANNEL_ID).send(embed=welcome_embed, view=view)
 
