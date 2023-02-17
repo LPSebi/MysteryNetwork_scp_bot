@@ -360,18 +360,20 @@ async def teamwarn(interaction: discord.Interaction, member: discord.Member, rea
     team_role = interaction.guild.get_role(TEAM_ROLE_ID)
     midteam_role = interaction.guild.get_role(MIDTEAM_ROLE_ID)
     highteam_role = interaction.guild.get_role(HIGHTEAM_ROLE_ID)
+    firstwarn_role = interaction.guild.get_role(FIRSTWARN_ROLE_ID)
     if team_role not in member.roles:
         return await interaction.response.send_message("Dieses Mitglied ist nicht im Team!", ephemeral=True)
     if interaction.user == member:
         return await interaction.response.send_message("Du kannst dich nicht selbst warnen!", ephemeral=True)
 
-    is_demoted = "Ja" if midteam_role in member.roles or highteam_role in member.roles else "Nein"
+    is_demoted = "Ja" if midteam_role in member.roles and firstwarn_role in member.roles or highteam_role and firstwarn_role in member.roles else "Nein"
     public_embed = discord.Embed(title="Warn",
                                  description=f"**{member.mention}** wurde von **{interaction.user.mention}** gewarnt!\nDemote: {is_demoted}!\n**Grund:** {reason}",
                                  color=TEAMWARN_COLOR)
     public_embed.set_thumbnail(url=member.avatar)
     public_embed.set_footer(text=f"Gewarnt von {interaction.user.name}#{interaction.user.discriminator} • {time.strftime('%d/%m/%Y %H:%M')}", icon_url=interaction.user.avatar)
 
+    public_embed.add_field(name="Demote", value=f"{member.mention} wurde von {interaction.user.mention} demoted!")
     await interaction.response.send_message(embed=selfembed, ephemeral=True)
     await team_updates_channel.send(embed=public_embed)
 
